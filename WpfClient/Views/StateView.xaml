@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="WpfClient.Views.StateView"
+             x:Name="StateWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:WpfClient.Converters"
+          DataContext="{Binding Source={StaticResource Locator}, Path=State}">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="_listEntryTemplate">
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Plane number is: " TextDecorations="Underline" Grid.Column="0" Grid.Row="0"/>
+                <TextBlock Text="{Binding PlaneId}" Grid.Column="1" Grid.Row="0"/>
+                <TextBlock Text="Current station is: " Grid.Column="0" Grid.Row="1"/>
+                <TextBlock Text="{Binding CurrentStation.StationId}" Grid.Column="1" Grid.Row="1"/>
+                <StackPanel Grid.Column="0" Grid.Row="2" >
+                    <TextBlock Text="Plane Route is:" />
+                </StackPanel>
+                <ListView Grid.Column="0" Grid.Row="3" ItemsSource="{Binding ObRoute}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Station number is: "  />
+                                <TextBlock Text="{Binding StationId}"  Grid.Column="1" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </DataTemplate>
+        <converters:ControlHeightConverter x:Key="ControlHeightConverter"/>
+    </UserControl.Resources>
+
+    <!--  ///////////////////////////////////////////////////////////  -->
+    <StackPanel>
+        <Button  Content="Begin Connection" Command="{Binding ConnectCommand}"/>
+        <Button  Content="Get Planes" Command="{Binding GetPlanesCommand}" IsEnabled="{Binding IsActive}"/>
+        <Button  Content="Save State" Command="{Binding SaveStateCommand}" IsEnabled="{Binding IsActive}"/>
+        <Button  Content="Load State" Command="{Binding LoadStateCommand}" IsEnabled="{Binding IsActive}"/>
+        <TextBox x:Name="txtNumOfState" Text="{Binding SlotNum}" ToolTip="Enter a save/load slot number between 1-5" />
+        <TextBlock Text="{Binding Messages}"/>
+        <ListView ItemsSource="{Binding Planes}" 
+                  ItemTemplate ="{StaticResource _listEntryTemplate}" 
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  ScrollViewer.CanContentScroll="False"
+                  MaxHeight="{Binding ElementName=StateWindow,
+                              Path=ActualHeight, 
+                              Converter={StaticResource ControlHeightConverter}}"
+                  >
+        </ListView>
+    </StackPanel>
+</UserControl>
